@@ -38,7 +38,7 @@ export default function RoleSelectionPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-6">
       <div className="max-w-md w-full space-y-8 text-center">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Choose your role</h1>
-        <p className="text-slate-600">This helps us customize your workspace experience..</p>
+        <p className="text-slate-600">This helps us customize your workspace experience.</p>
         
         <div className="grid gap-4 mt-8">
           {roles.map((role) => (
