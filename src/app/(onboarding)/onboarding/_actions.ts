@@ -3,29 +3,50 @@
 import { UserRole } from "@/types/globals";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 
-export const completeOnboarding = async (formData: FormData) => {
+export const saveRole = async (role: UserRole) => {
   const { userId } = await auth();
-
-  if (!userId) {
-    return { error: "No user id found" };
-  }
-
-  const role = formData.get("role") as UserRole | undefined;
+  if (!userId) return { error: "No user id found" };
 
   try {
     const client = await clerkClient();
-    
-    // Update the user's metadata in Clerk
     await client.users.updateUser(userId, {
-      publicMetadata: {
+      publicMetadata: { role },
+    });
+    return { success: true };
+  } catch (_err) { // Prefix with underscore to satisfy ESLint
+    return { error: "Failed to save role" };
+  }
+};
+
+export const saveWorkspace = async (name: string) => {
+  const { userId } = await auth();
+  if (!userId) return { error: "No user id found" };
+
+  try {
+    const client = await clerkClient();
+    await client.users.updateUser(userId, {
+      publicMetadata: { workspaceName: name },
+    });
+    return { success: true };
+  } catch (_err) { // Fixed unused var
+    return { error: "Failed to save workspace" };
+  }
+};
+
+export const completeOnboarding = async (projectName: string) => {
+  const { userId } = await auth();
+  if (!userId) return { error: "No user id found" };
+
+  try {
+    const client = await clerkClient();
+    await client.users.updateUser(userId, {
+      publicMetadata: { 
         onboardingComplete: true,
-        role: role ?? undefined,
+        firstProjectName: projectName 
       },
     });
-
     return { message: "Onboarding complete" };
-  } catch (err) {
-    console.error("Clerk Error:", err);
-    return { error: "There was an error updating your profile" };
+  } catch (_err) { // Fixed unused var
+    return { error: "Final step failed" };
   }
 };
