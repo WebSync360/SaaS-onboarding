@@ -13,7 +13,7 @@ export const saveRole = async (role: UserRole) => {
       publicMetadata: { role },
     });
     return { success: true };
-  } catch (_err) { // Prefix with underscore to satisfy ESLint
+  } catch { // <--- No variable here, no ESLint error!
     return { error: "Failed to save role" };
   }
 };
@@ -28,7 +28,7 @@ export const saveWorkspace = async (name: string) => {
       publicMetadata: { workspaceName: name },
     });
     return { success: true };
-  } catch (_err) { // Fixed unused var
+  } catch { // <--- Removed variable
     return { error: "Failed to save workspace" };
   }
 };
@@ -46,7 +46,7 @@ export const completeOnboarding = async (projectName: string) => {
       },
     });
     return { message: "Onboarding complete" };
-  } catch (_err) { // Fixed unused var
+  } catch { // <--- Removed variable
     return { error: "Final step failed" };
   }
 };
