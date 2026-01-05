@@ -31,7 +31,7 @@ export default async function DashboardPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Overview</h1>
-          <p className="text-slate-500 mt-1">Welcome back! Here&apos;s what is happening today.......</p>
+          <p className="text-slate-500 mt-1">Welcome back! Here&apos;s what is happening today......</p>
         </div>
         <CreateProjectForm />
       </div>
