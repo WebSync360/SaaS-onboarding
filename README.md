@@ -1,11 +1,14 @@
 > PROJECT: Onboarding MVP
+ 
 > STATUS: Live • Validation-Ready
+
 > ROLE: Product Engineer (Market-Focused)
+
 > PURPOSE: Help founders validate onboarding before scaling
 
 ---
 
-# ONBOARDING MVP — TURN NEW USERS INTO ACTIVATED USERS
+# ONBOARDING MVP : TURN NEW USERS INTO ACTIVATED USERS
 
 ---
 
