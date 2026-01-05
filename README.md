@@ -26,16 +26,15 @@ I developed a **Dual-Layer Layout System**. On the frontend, I implemented the *
 
 ### > [04] TECH STACK DEPLOYMENT
 
-$ flux --info
+$ flux list-stack
 
-{
-"framework": "Next.js 16 (App Router)",
-"styling": "Tailwind CSS v4 (Alpha/Experimental)",
-"auth": "Clerk (MFA + Metadata Sync)",
-"database": "Supabase / PostgreSQL",
-"icons": "Lucide-React (Tree-shaken)",
-"vcs": "Git/GitHub"
-}
+CORE STACK IMPLEMENTATION
+
+Framework --> Next.js 15 (App Router)
+Auth Layer --> Clerk (Metadata Sync)
+Database --> Supabase (PostgreSQL)
+Styling --> Tailwind CSS v4
+Iconography --> Lucide-React
 
 ---
 
