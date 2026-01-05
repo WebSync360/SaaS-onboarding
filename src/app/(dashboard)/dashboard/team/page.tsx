@@ -2,11 +2,10 @@ import { auth } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 import CreateProjectForm from "@/components/CreateProjectForm";
 import { Folder, Clock, CheckCircle2 } from "lucide-react";
-const { sessionClaims } = await auth();
-const userRole = sessionClaims?.metadata.role; // No red squiggles!
 
 export default async function DashboardPage() {
-  const { userId } = await auth();
+  const { userId, sessionClaims } = await auth();
+  const userRole = sessionClaims?.metadata.role;
   
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,16 +26,17 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Overview</h1>
-          <p className="text-slate-500 mt-1">Welcome back! Here&apos;s what is happening today.</p>
+          <p className="text-slate-500 mt-1">
+            Welcome back, <span className="text-blue-600 font-semibold uppercase text-xs tracking-tighter">{userRole || 'User'}</span>! 
+            Here&apos;s what is happening today.
+          </p>
         </div>
         <CreateProjectForm />
       </div>
 
-      {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat) => (
           <div key={stat.label} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
@@ -55,7 +55,7 @@ export default async function DashboardPage() {
       <div className="space-y-4">
         <h2 className="text-xl font-semibold text-slate-800">Recent Projects</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {projects?.length === 0 ? (
+          {!projects || projects.length === 0 ? (
             <div className="col-span-full text-center py-20 bg-white rounded-3xl border-2 border-dashed border-slate-200">
               <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Folder className="text-slate-300" size={32} />
@@ -64,7 +64,7 @@ export default async function DashboardPage() {
               <p className="text-slate-500 max-w-xs mx-auto mt-2">Get started by creating your first project with the button above.</p>
             </div>
           ) : (
-            projects?.map((project) => (
+            projects.map((project) => (
               <div key={project.id} className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all">
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center group-hover:bg-blue-50 transition-colors">

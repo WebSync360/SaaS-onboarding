@@ -4,68 +4,86 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { createClient } from '@supabase/supabase-js'
 
 export async function POST(req: Request) {
-  console.log("Webhook request received");
-
   const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
+
   if (!WEBHOOK_SECRET) {
-    console.error("Missing CLERK_WEBHOOK_SECRET");
-    return new Response('Error: Missing Secret', { status: 500 })
+    throw new Error('Please add CLERK_WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local')
   }
 
-  // Next.js 15+ requires awaiting headers
-  const headerPayload = await headers();
-  const svix_id = headerPayload.get("svix-id");
-  const svix_timestamp = headerPayload.get("svix-timestamp");
-  const svix_signature = headerPayload.get("svix-signature");
+  // Get the headers
+  const headerPayload = await headers()
+  const svix_id = headerPayload.get('svix-id')
+  const svix_timestamp = headerPayload.get('svix-timestamp')
+  const svix_signature = headerPayload.get('svix-signature')
 
+  // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    console.error("Missing Svix headers");
-    return new Response('Error occured -- no svix headers', { status: 400 })
+    return new Response('Error occurred -- no svix headers', {
+      status: 400,
+    })
   }
 
+  // Get the body
   const payload = await req.json()
-  const body = JSON.stringify(payload);
-  const wh = new Webhook(WEBHOOK_SECRET);
+  const body = JSON.stringify(payload)
+
+  // Create a new Svix instance with your secret.
+  const wh = new Webhook(WEBHOOK_SECRET)
+
   let evt: WebhookEvent
 
+  // Verify the payload with the headers
   try {
     evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
+      'svix-id': svix_id,
+      'svix-timestamp': svix_timestamp,
+      'svix-signature': svix_signature,
     }) as WebhookEvent
-    console.log("Verification Successful");
   } catch (err) {
-    // Cast err to Error type to access .message safely
-    const error = err as Error;
-    console.error('Verification Failed:', error.message);
-    return new Response('Error verifying webhook', { status: 400 })
+    console.error('Error verifying webhook:', err)
+    return new Response('Error occurred', {
+      status: 400,
+    })
   }
 
-  // Initialize Supabase (Ensure your .env has the CORRECTED .supabase.co URL)
+  // Initialize Supabase with Service Role Key to bypass RLS during setup
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const eventType = evt.type;
+  const eventType = evt.type
 
   if (eventType === 'user.created') {
-    const { id } = evt.data;
-    console.log(`Attempting to create workspace for user: ${id}`);
+    const { id, email_addresses, first_name, last_name, image_url } = evt.data
 
+    // 1. Extract primary email
+    const primaryEmail = email_addresses?.[0]?.email_address
+    
+    // 2. Format name
+    const fullName = `${first_name || ''} ${last_name || ''}`.trim()
+
+    console.log(`🚀 Syncing User Created Event for: ${id}`)
+
+    // 3. Insert into Workspaces table matching your new SQL schema
+    // Use .upsert() instead of .insert()
     const { error } = await supabase
       .from('workspaces')
-      .insert({ id: id, name: "My Workspace" })
+      .upsert({
+        id: id,
+        name: fullName || 'New Workspace',
+        user_email: primaryEmail,
+        avatar_url: image_url,
+        role: 'UNKNOWN',
+      }, { onConflict: 'id' }) // Tell it to just update if the 'id' already exists
 
     if (error) {
-      // THIS WILL TELL US THE EXACT REASON (e.g., Table not found, Duplicate ID, etc.)
-      console.error('SUPABASE DB ERROR:', error.message, error.code, error.details);
-      return new Response(`Error creating workspace: ${error.message}`, { status: 500 })
+      console.error('Supabase Sync Error:', error.message)
+      return new Response(`Error: ${error.message}`, { status: 500 })
     }
-    
-    console.log('SUCCESS: Workspace created in database');
+
+    console.log(`Successfully synced user ${id} to Supabase`)
   }
 
-  return new Response('Webhook processed', { status: 200 })
+  return new Response('Webhook processed successfully', { status: 200 })
 }
