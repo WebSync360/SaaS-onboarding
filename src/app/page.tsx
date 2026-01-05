@@ -49,7 +49,7 @@ export default function Home() {
 
           <h1 className="text-6xl md:text-7xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
             Management that feels <br />
-            <span className="bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent italic">effortless.</span>
+            <span className="bg-linear-to-r from-blue-600 to-indigo-500 bg-clip-text text-transparent">effortless.</span>
           </h1>
 
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto leading-relaxed">
@@ -86,7 +86,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Large Bento Item */}
-            <div className="md:col-span-2 bg-slate-50 rounded-3xl p-8 border border-slate-100 flex flex-col justify-between group overflow-hidden relative">
+            <div className="md:col-span-2 bg-slate-100 rounded-3xl p-8 border border-slate-100 flex flex-col justify-between group overflow-hidden relative">
                <div className="relative z-10">
                  <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-6">
                     <LayoutGrid className="text-blue-600" size={24} />
@@ -106,7 +106,7 @@ export default function Home() {
                </div>
             </div>
 
-            <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col justify-between hover:border-blue-200 transition-all">
+            <div className="bg-slate-200 rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col justify-between hover:border-blue-200 transition-all">
                <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center mb-6">
                   <Shield className="text-emerald-600" size={24} />
                </div>
