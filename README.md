@@ -1,5 +1,3 @@
----
-
 > PROJECT: Onboarding MVP
 > STATUS: Live • Validation-Ready
 > ROLE: Product Engineer (Market-Focused)
