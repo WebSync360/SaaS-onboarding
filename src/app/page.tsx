@@ -112,7 +112,7 @@ export default function Home() {
                </div>
                <div>
                  <h3 className="text-xl font-bold text-slate-900 mb-2">Secure by Default</h3>
-                 <p className="text-slate-500 text-sm">Enterprise-grade security powered by Supabase RLS policies..........</p>
+                 <p className="text-slate-500 text-sm">Enterprise-grade security powered by Supabase RLS policies...........</p>
                </div>
             </div>
 
